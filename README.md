@@ -2,59 +2,68 @@
 
 ## Project Description
 
-In this assignment, you will improve and productionize a basic Node.js + Express application that acts as an online code runner. The existing application allows users to execute JavaScript code, save code snippets, and retrieve saved programs from a MongoDB database.
+This project is a deliberately **under-engineered** Online Code Runner API built using **Node.js**, **Express**, **MongoDB**, and **JWT Authentication**. While the application is functional, it intentionally contains poor coding practices, security vulnerabilities, and architectural issues that are commonly found in beginner projects.
 
-While the application is functional, it lacks many of the qualities expected in a production-ready backend. Your task is to refactor, secure, and enhance the project by applying software engineering and DevOps best practices.
+Your objective is to transform this codebase into a production-ready backend by applying software engineering and DevOps best practices.
 
-The focus of this assignment is **not** on adding new business features, but on improving the overall quality, maintainability, security, and reliability of the application.
-
-By the end of this assignment, the project should follow a clean architecture, implement proper authentication, handle failures gracefully, maintain readable code standards, and follow industry best practices for version control and development workflows.
+**Do not rewrite the application from scratch.** Instead, refactor and improve the existing code while preserving its functionality.
 
 ---
 
 # Assignment Objectives
 
-Implement the following improvements:
+The current project intentionally contains the following issues. Your task is to identify and fix them.
 
 ## 1. Project Structure
 
 * Refactor the application into a modular folder structure.
-* Separate routes, controllers, models, middleware, utilities, and configuration.
-* Remove duplicated code wherever possible.
+* Separate routes, controllers, models, middleware, configuration, and utility functions.
+* Improve readability and maintainability.
 
-## 2. User Authentication
+## 2. Hardcoded Secrets
 
-* Implement user registration and login.
-* Hash user passwords before storing them.
-* Use JWT-based authentication.
-* Protect appropriate API endpoints using authentication middleware.
+* Remove all hardcoded secrets from the source code.
+* Store configuration values (database URI, JWT secret, etc.) using environment variables.
+* Provide a `.env.example` file.
 
-## 3. Authorization
+## 3. Exception Handling
 
-* Ensure users can access only their own saved code snippets.
-* Prevent unauthorized access to protected resources.
+* The application currently lacks proper exception handling.
+* Add appropriate `try...catch` blocks where required.
+* Return meaningful HTTP status codes and error messages.
+* Prevent the server from crashing due to unhandled errors.
 
-## 4. Exception Handling
+## 4. Password Security
 
-* Handle all possible runtime and database errors gracefully.
-* Return meaningful HTTP status codes.
-* Avoid exposing internal server errors or stack traces to clients.
+* Passwords are currently stored in plain text.
+* Hash passwords before storing them in the database.
+* Use a suitable password hashing library.
 
-## 5. Logging
+## 5. Login Logic
 
-* Integrate an application logging library.
+* The current login implementation does **not** verify the user's password correctly.
+* Fix the authentication logic so that users can only log in with valid credentials.
+* Return appropriate responses for invalid login attempts.
+
+## 6. Authorization
+
+* Ensure authenticated users can only access their own saved code snippets.
+* Protect appropriate routes using JWT middleware.
+
+## 7. Logging
+
+* Integrate an application logging solution.
 * Log important events such as:
 
   * Server startup
-  * User authentication attempts
-  * Successful and failed API requests
-  * Unexpected application errors
-* Store logs in an appropriate format.
+  * Authentication attempts
+  * API requests
+  * Application errors
 
-## 6. Middleware
+## 8. Middleware
 
-* Add appropriate Express middleware where necessary.
-* Consider middleware for:
+* Add appropriate middleware where necessary.
+* Examples include:
 
   * Authentication
   * Request logging
@@ -63,44 +72,37 @@ Implement the following improvements:
   * CORS
   * JSON parsing
 
-## 7. Security Improvements
+## 9. Git Security
 
-* Store secrets using environment variables.
-* Never commit sensitive information to Git.
-* Protect against common backend security mistakes.
-* Validate incoming request data wherever appropriate.
+* Configure a proper `.gitignore`.
+* Ensure sensitive files and generated artifacts are excluded from version control.
+* Follow good Git hygiene practices.
 
-## 8. Git Security
+## 10. Code Formatting
 
-* Configure an appropriate `.gitignore`.
-* Ensure secrets, generated files, and dependencies are not committed.
-* Keep the repository clean and organized.
+* Configure a formatter such as Prettier.
+* Ensure the entire project follows consistent formatting.
 
-## 9. Code Formatting
+## 11. Linting
 
-* Configure an automatic code formatter.
-* Ensure consistent formatting across the project.
-
-## 10. Linting
-
-* Configure a JavaScript linter.
+* Configure ESLint.
 * Resolve linting issues throughout the project.
 * Follow consistent coding standards.
 
-## 11. Git Hooks
+## 12. Git Hooks
 
 * Configure Husky.
 * Automatically run formatting and/or linting checks before commits.
 
-## 12. Documentation
+## 13. Documentation
 
-* Update the README with:
+Update the README to include:
 
-  * Project overview
-  * Installation steps
-  * Environment variable configuration
-  * Running the project
-  * Available API endpoints
+* Project overview
+* Installation steps
+* Environment variable setup
+* Running the application
+* API documentation
 
 ---
 
@@ -110,24 +112,25 @@ Students should submit:
 
 * Refactored project source code
 * Updated README
-* Environment variable template (`.env.example`)
-* Proper Git history
+* `.env.example`
 * Working authentication system
-* Configured formatter, linter, and Husky hooks
+* Secure password storage
+* Proper project structure
 * Logging implementation
-* Clean and modular project structure
+* Configured ESLint, Prettier, and Husky
+* Clean Git history
 
 ---
 
 # Evaluation Criteria
 
-* Clean and maintainable project structure
-* Correct implementation of authentication and authorization
+* Code organization and maintainability
+* Correct authentication and authorization
+* Secure handling of sensitive information
 * Robust exception handling
-* Meaningful logging
-* Appropriate use of middleware
-* Security best practices
-* Code quality and consistency
-* Proper Git hygiene
+* Quality of logging
+* Appropriate middleware usage
+* Git best practices
+* Code formatting and linting
 * Documentation quality
-* Overall project maintainability
+* Overall production readiness
