@@ -1,35 +1,72 @@
-import fs from "fs";
-import { exec } from "child_process";
 import Code from "../models/Code.js";
+import logger from "../logger/logger.js";
 
 export const runCode = async (req, res) => {
   try {
-    const { code, input } = req.body;
+    const { code, input = "", language = "javascript" } = req.body;
 
-    fs.writeFileSync("code.js", code);
-    fs.writeFileSync("input.txt", input);
-
-    const start = Date.now();
-
-    exec("node code.js < input.txt", (error, stdout, stderr) => {
-      const end = Date.now();
-
-      if (error) {
-        return res.status(500).json({
-          message: "Code execution failed",
-          error: error.message,
-        });
-      }
-
-      res.json({
-        stdout,
-        stderr,
-        executionTime: `${end - start} ms`,
+    if (!code || typeof code !== "string") {
+      return res.status(400).json({
+        message: "Code must be provided as a non-empty string",
       });
+    }
+
+    const runnerUrl = process.env.RUNNER_SERVICE_URL || "http://127.0.0.1:5000";
+
+    const response = await fetch(`${runnerUrl}/execute`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        language,
+        code,
+        input,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return res.status(response.status).json(data);
+    }
+
+    if (data.compilationError) {
+      return res.status(400).json({
+        message: "Compilation Error",
+        stdout: data.stdout || "",
+        stderr: data.stderr || "",
+        executionTime: data.executionTime,
+      });
+    }
+
+    if (data.timedOut) {
+      return res.status(408).json({
+        message: "Execution Timed Out",
+        stdout: data.stdout || "",
+        stderr: data.stderr || "Execution timed out",
+        executionTime: data.executionTime,
+      });
+    }
+
+    if (!data.success && data.exitCode !== 0) {
+      return res.status(400).json({
+        message: "Runtime Error",
+        stdout: data.stdout || "",
+        stderr: data.stderr || "",
+        executionTime: data.executionTime,
+      });
+    }
+
+    return res.json({
+      stdout: data.stdout,
+      stderr: data.stderr,
+      executionTime: data.executionTime,
     });
   } catch (err) {
-    res.status(500).json({
-      message: "Internal Server Error",
+    logger.error(`Runner communication error: ${err.message}`);
+    return res.status(500).json({
+      message: "Failed to communicate with code execution runner",
       error: err.message,
     });
   }

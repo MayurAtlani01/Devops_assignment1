@@ -1,0 +1,13 @@
+{
+  "name": "code-runner-service",
+  "version": "1.0.0",
+  "description": "Dedicated execution service for running untrusted code in isolation",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}

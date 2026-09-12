@@ -17,9 +17,10 @@ app.use(helmet());
 app.use(cors());
 
 app.use(morgan("dev"));
-app.use(errorHandler);
 
 app.use(authRoutes);
 app.use(codeRoutes);
+
+app.use(errorHandler);
 
 export default app;
